@@ -41,19 +41,6 @@ public static class DependencyInjection
         services.AddScoped<ITransactionRepository, TransactionRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-        // Security Services
-        services.AddScoped<IEncryptionService>(sp =>
-        {
-            var configuration = sp.GetRequiredService<IConfiguration>();
-            var encryptionKey = configuration["Security:EncryptionKey"] ??
-                throw new InvalidOperationException("Encryption key not configured");
-            return new EncryptionService(encryptionKey);
-        });
-        services.AddScoped<IAccountNumberGenerator, AccountNumberGenerator>();
-
-        // Authentication Services
-        services.AddScoped<ITokenService, TokenService>();
-
         // Redis
         IConnectionMultiplexer connectionMultiplexer = ConnectionMultiplexer.Connect(configuration["ConnectionStrings:Redis"]!);
         services.AddStackExchangeRedisCache(options =>
@@ -77,7 +64,13 @@ public static class DependencyInjection
 
         services.AddScoped<ICacheService, RedisCacheService>();
         services.AddScoped<IPaymentService, PaystackPaymentService>();
+        services.AddScoped<IAccountNumberGenerator, AccountNumberGenerator>();
+        services.AddScoped<IEncryptionService, EncryptionService>();
+        services.AddScoped<ITokenService, TokenService>();
+
         services.AddScoped<ITransactionManager, TransactionManager>();
+        services.AddScoped<IAccountManager, AccountManager>();
+        services.AddScoped<IUserManager, UserManager>();
 
         // Payment Services
         services.AddHttpClient("paystackAPI", paystack =>
