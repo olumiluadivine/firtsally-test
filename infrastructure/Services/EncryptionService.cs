@@ -1,4 +1,5 @@
 using application.Contracts.Services;
+using Microsoft.Extensions.Configuration;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -8,12 +9,12 @@ internal class EncryptionService : IEncryptionService
 {
     private readonly string _encryptionKey;
 
-    public EncryptionService(string encryptionKey)
+    public EncryptionService(IConfiguration configuration)
     {
-        _encryptionKey = encryptionKey ?? throw new ArgumentNullException(nameof(encryptionKey));
+        _encryptionKey = configuration["Security:EncryptionKey"] ?? throw new ArgumentNullException(nameof(_encryptionKey));
 
         if (_encryptionKey.Length < 32)
-            throw new ArgumentException("Encryption key must be at least 32 characters long", nameof(encryptionKey));
+            throw new ArgumentException("Encryption key must be at least 32 characters long", nameof(_encryptionKey));
     }
 
     public string Decrypt(string cipherText)
