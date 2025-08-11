@@ -25,8 +25,7 @@ public record UserProfileDto(
     DateTime CreatedAt
 );
 
-public class LoginCommandHandler(
-    IUserManager userManager) : IRequestHandler<LoginCommand, LoginResult>
+public class LoginCommandHandler(IUserManager userManager) : IRequestHandler<LoginCommand, LoginResult>
 {
     public async Task<LoginResult> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
